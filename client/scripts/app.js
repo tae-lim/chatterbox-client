@@ -9,13 +9,22 @@ $(document).ready(function(){
     type: 'GET',
     success: function (data) {
       console.log('chatterbox: Returned messages');
-        for(var i = 0; i < data.results.length; i++) {
 
-          var $username  = $('<div class="username">' + data.results[i].username + '</div>');
-          var $text = $('<div class="text">' + data.results[i].text + '</div><br>');
-
-          $("#chats").append($username).append($text);
+      var roomnames = {};
+      for(var i = 0; i < data.results.length; i++) {
+        //append rooms
+        var $room = data.results[i].roomname;
+        if (!roomnames[$room]) {
+          $('select').append('<option value="roomname">' + $room + '</option>');
+          roomnames[$room] = $room;
         }
+
+        //append messages
+        var $username  = $('<div class="username">' + data.results[i].username + '</div>');
+        var $text = $('<div class="text">' + data.results[i].text + '</div><br>');
+
+        $("#chats").append($username).append($text);
+      }
     },
     error: function (data) {
       // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -23,9 +32,6 @@ $(document).ready(function(){
     }
   });
 };
-
-
-//use jQuery to trigger get messages on click or every x seconds or some other way
 
 let escape = (submission) => {
   //get input from user
@@ -51,12 +57,12 @@ let escape = (submission) => {
 };
 
   $('form').submit(function(event) {
-
+    //console.log('here?');
     //FORM FIELDS
     var message = {
-      //username: escape(username),
+      username: null,
       text: escape($('input[name=text]').val()),
-      //roomname: escape(roomname)
+      roomname: null
     };
 
     //POST
@@ -68,6 +74,7 @@ let escape = (submission) => {
       contentType: 'application/json',
       success: function (data) {
         console.log('chatterbox: Message sent');
+        //add
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
