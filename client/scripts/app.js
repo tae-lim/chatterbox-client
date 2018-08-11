@@ -1,5 +1,31 @@
-// YOUR CODE HERE:
 
+$(document).ready(function(){
+  getMessages();
+});
+
+  var getMessages = function() {
+    $.ajax({
+    url: 'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
+    type: 'GET',
+    success: function (data) {
+      console.log('chatterbox: Returned messages');
+        for(var i = 0; i < data.results.length; i++) {
+
+          var $username  = $('<div class="username">' + data.results[i].username + '</div>');
+          var $text = $('<div class="text">' + data.results[i].text + '</div><br>');
+
+          $("#chats").append($username).append($text);
+        }
+    },
+    error: function (data) {
+      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+      console.error('chatterbox: Failed to return messages', data);
+    }
+  });
+};
+
+
+//use jQuery to trigger get messages on click or every x seconds or some other way
 
 let escape = (submission) => {
   //get input from user
@@ -10,7 +36,8 @@ let escape = (submission) => {
     '>' : '&gt;',
     '\"' : '&quot;',
     '\'' : '&#x27;',
-    '/' : '&#x2F;'
+    '/' : '&#x2F;',
+    '$' : '&#36;'
   };
   //loop through each character
   for (let i = 0; i < input.length; i++) {
@@ -21,18 +48,41 @@ let escape = (submission) => {
     }
   }
   return input.join('');
-    //if it is < > & , etc
-      //replace with alt;, amp;, etc
-    //return the modified string
 };
 
-// & --> &amp;
-//  < --> &lt;
-//  > --> &gt;
-//  " --> &quot;
-//   ' --> &#x27;     &apos; not recommended because its not in the HTML spec (See: section 24.4.1) &apos; is in the XML and XHTML specs.
-//  / --> &#x2F;     forward slash is included as it helps end an HTML entity
+  $('form').submit(function(event) {
+
+    //FORM FIELDS
+    var message = {
+      //username: escape(username),
+      text: escape($('input[name=text]').val()),
+      //roomname: escape(roomname)
+    };
+
+    //POST
+    $.ajax({
+      // This is the url you should use to communicate with the parse API server.
+      url: 'http://parse.hrr.hackreactor.com/chatterbox/classes/messages',
+      type: 'POST',
+      data: JSON.stringify(message),
+      contentType: 'application/json',
+      success: function (data) {
+        console.log('chatterbox: Message sent');
+      },
+      error: function (data) {
+        // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+        console.error('chatterbox: Failed to send message', data);
+      }
+    });
 
 
-//input: user submission (username, message, friend's name during search, naming a room)
-//output: modified string
+    getMessages();
+
+  });
+
+
+
+
+
+
+
