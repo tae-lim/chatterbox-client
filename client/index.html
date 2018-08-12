@@ -7,6 +7,7 @@
 
     <!-- dependencies -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
     <script>
       // YOU DO NOT NEED TO EDIT THIS CODE
       if (!/(&|\?)username=/.test(window.location.search)) {
@@ -14,7 +15,7 @@
         if (newSearch !== '' & newSearch !== '?') {
           newSearch += '&';
         }
-        newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
+        newSearch += 'username=' + prompt('What is your name?' || 'anonymous');
         window.location.search = newSearch;
       }
     </script>
@@ -26,7 +27,30 @@
     <div id="main">
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
+      <select ID="roomSelect">
+        <option value="allMessages">All Messages</option>
+      </select>
+<!--       <form class="newRoomForm" action ="http://parse.hrr.hackreactor.com/chatterbox/classes/messages" method="POST">
+        <label>Create a Room!</label><br>
+        <input type="text" name="roomname">
+        <input type="submit" value="send"> -->
+      </form>
+      <form action ="#" id="send" method="POST">
+        <label>Write a Message!</label><br>
+        <input type="text" id="message" name="text">
+        <input type="submit" value="send">
+      </form>
     </div>
-    <div id="chats"></div>
+    <div id="chats">
+
+    <!--Input form-->
+
+    </div>
+    <script>
+      $(function () {
+        app.init()
+      });
+    </script>
+
   </body>
 </html>
